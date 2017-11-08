@@ -1,8 +1,12 @@
+var objCountries = [];
+var biggestCountry = [];
+var smallestCountries = [];
+var biggestCountries = [];
+
+
 $(document).ready(function() {
-    var objCountries = [];
     $.getJSON('https://restcountries.eu/rest/v2/all', function(countries) {
         objCountries = countries;
-        console.log(countries);
         $.each(countries, function(index, country) {
 
             $('#cmbCountry').append($('<option>', {
@@ -10,7 +14,68 @@ $(document).ready(function() {
                 text: country.name
             }));
         });
+    biggestCountry = objCountries.sort(function(a, b) { return b.area - a.area });
+    // console.log(biggestCountry);
+    // biggestCountry = biggestCountry[0];
+    smallestCountry = objCountries.sort(function(a, b) { return a.area - b.area });
+    // console.log(smallestCountry);
+    $.each(smallestCountry, function(i, country) {
+      if(country.area == null) {
+        smallestCountry = smallestCountry.slice(i);
+      }
     });
+    // smallestCountry = smallestCountry[0];
+
+    // Create array of 5 smallest countires
+    for(var i= 0, l = 5; i < l; i++){
+      smallestCountries.push(smallestCountry[i]);
+    }
+    // console.log(smallestCountries);
+    //
+    // Create array of 5 biggest countires
+    for(var i= 0, l = 5; i < l; i++){
+      biggestCountries.push(biggestCountry[i]);
+    }
+    console.log(biggestCountries);
+    //
+    // smallestCountry = smallestCountry[0];
+    // console.log(biggestCountry);
+    // console.log(smallestCountry);
+
+
+    $("#biggest-country").append(
+      $("<img>", {
+        src: biggestCountry.flag
+      }
+    ));
+
+    $("#smallest-country").append(
+      $("<img>", {
+        src: smallestCountry.flag
+      }
+    ));
+
+    $.each(objCountries, function(i, country) {
+      if(country.region == "Europe") {
+        $("#country-list").append(
+          $("<li>", {
+            text: country.name
+          }
+        ));
+      };
+    });
+
+    $.each(smallestCountries, function(i, country) {
+      $("#smallest-countries").append(`
+          <img src="${country.flag}"> </img>
+          <p>${country.name}</p>
+        `)
+    });
+
+  });
+
+
+
     $('#cmbCountry').on('change', function() {
         var indexCountry = $(this).val();
         $('#mainCity').empty();
